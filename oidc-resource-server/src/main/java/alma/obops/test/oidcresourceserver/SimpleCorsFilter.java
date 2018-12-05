@@ -1,19 +1,19 @@
 package alma.obops.test.oidcresourceserver;
 
-import org.springframework.boot.web.servlet.*;
-import org.springframework.context.annotation.*;
-import org.springframework.web.cors.*;
-import org.springframework.web.filter.*;
-import javax.servlet.*;
-import org.springframework.stereotype.*;
-import javax.servlet.http.*;
-import org.springframework.core.annotation.*;
-import java.io.*;
-import org.springframework.core.*;
+import java.io.IOException;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-
-import java.util.Arrays;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * A CORS filter that accepts all preflight (OPTIONS) requests 
