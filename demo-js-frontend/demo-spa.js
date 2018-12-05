@@ -8,7 +8,7 @@
 
 const authServerUrl = 'https://ma24088.ads.eso.org:8019/cas'
 const resourceUrl = 'http://localhost:9000/oidc-resource-server/'
-const resource2Url = 'http://localhost:9001/resource2/'
+const resource2Url = 'http://localhost:9001/oidc-resource-server/'
 const clientId = 'demoOIDC'
 
 function start( accessToken ) {
