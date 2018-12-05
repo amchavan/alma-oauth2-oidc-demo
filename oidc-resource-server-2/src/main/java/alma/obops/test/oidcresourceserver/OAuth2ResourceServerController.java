@@ -16,7 +16,7 @@ public class OAuth2ResourceServerController {
 
 	@GetMapping("/")
 	public Object index(@AuthenticationPrincipal Jwt jwt) {
-		Message msg = new Message( String.format( "Hello, %s!", jwt.getSubject()) );
+		Message msg = new Message( String.format( "Goodbye, %s!", jwt.getSubject()) );
 		return msg;
 	}
 }
