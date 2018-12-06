@@ -3,21 +3,22 @@ package alma.obops.test.oidcresourceserver;
 
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Josh Cummings
+ * @author amchavan from the Spring Security 5.x samples
  */
 @RestController
 public class OAuth2ResourceServerController {
 
-	@GetMapping("/")
-	public Object index(@AuthenticationPrincipal Jwt jwt) {
-		Message msg = new Message( String.format( "Goodbye, %s!", jwt.getSubject()) );
-		return msg;
+	@GetMapping( "/aod-only" )
+	@PreAuthorize( "hasAuthority('OBOPS/AOD')" )
+	public Object privateMessage( @AuthenticationPrincipal Jwt jwt ) {
+		return new Message( "OBOPS/AOD" );
 	}
 }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Josh Cummings
+ * @author amchavan from the Spring Security 5.x samples
  */
 @RestController
 public class OAuth2ResourceServerController {
