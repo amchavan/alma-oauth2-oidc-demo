@@ -66,10 +66,9 @@ function start() {
 
     $("#logout").click( function() {
         // Logout protocol: remove the access token from the session storage, 
-        //                  invoke CAS' logout endpoint,
-        //                  redirect to ALMA
+        //                  redirect to CAS' logout endpoint, which in turn
+        //                  redirects to ALMA
         removeAccessTokenFromStorage();
-        // httpService.get( authServerUrl + '/logout' );
         window.location.replace( authServerUrl + '/logout?service=' + afterLogoutUrl );
     });
 }
