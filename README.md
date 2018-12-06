@@ -18,26 +18,37 @@ cd ../oicd-resource-server-2
 mvn spring-boot:run
 ```
 
-The resource servers are listening to _http://localhost:9000/oidc-resource-server/_ and _http://localhost:9001/oidc-resource-server/_ 
+The resource servers are listening to _http://localhost:9000/oidc-resource-server/_ and _http://localhost:9001/oidc-resource-server/aod-only_ 
 
-They are secured by OIDC, meaning that they expect a valid JWT as _Bearer_ token in the _Authorization_ header. Without that, they will reject any request as _Unauthorized_.
+They are secured by OIDC, meaning that they expect a valid JWT as _Bearer_ token in the _Authorization_ header: without the token the servers will reject any GET request as _Unauthorized_.  
+If the token describes a user who does not have the _OBOPS/AOD_ permission, a GET from the second URL will also fail.
 
-### Negative test
-
-`curl -I http://localhost:9000/oidc-resource-server/` should show _401_
-
-### Positive test
+### Positive tests
 
 Obtain a valid JWT from the authentication server by navigating to  
 `https://ma24088.ads.eso.org:8019/cas/oidc/token?response_type=id_token%20token&grant_type=password&client_id=demoOIDC&username=USERNAME&password=PASSWORD`  
-where USERNAME and PASSWORD are the user credentials. (The JWT is a _long_ string like _eyJhbGciOiJSUzI1NiIsImtpZCI6ImFsbWEub2JvcHMuY2FzIn0.eyJqdGkiOiI0NTE5NzEzN ..._.)
+where USERNAME and PASSWORD are the user credentials of a user with the _OBOPS/AOD_ role/authority. (The JWT is a _long_ string like _eyJhbGciOiJSUzI1NiIsImtpZCI6ImFsbWEub2JvcHMuY2FzIn0.eyJqdGkiOiI0NTE5NzEzN ..._.)
 
-Now ask for the resource with an Authorization header including the JWT:
+Now ask for the resources with an Authorization header including the JWT:
 ```
 JWT='eyJhbGciOiJS....'
-curl -H "Authorization: Bearer $JWT" http://localhost:9000/oidc-resource-server/ 
+curl -H "Authorization: Bearer $JWT" http://localhost:9000/oidc-resource-server/
+curl -H "Authorization: Bearer $JWT" http://localhost:9001/oidc-resource-server/aod-only
 ```
-You should get a JSON message like `{"id":"8e14678d-...","content":"Hello, obops!"}`
+You should get JSON messages like `{"id":"8e14678d-...","content":"Hello, obops!"}` and `{"id":"11b18665-...","content":"OBOPS/AOD"}`, respectively.
+
+### Negative tests
+
+`curl -I http://localhost:9000/oidc-resource-server/` should return _401_
+
+`curl -I http://localhost:9001/oidc-resource-server/aod-only` should also return _401_
+
+Now obtain another valid JWT from the authentication server, this time for a user who does not have the _OBOPS/AOD_ role/authority. With that token:
+```
+JWT='eyJhbGciO....'
+curl -I -H "Authorization: Bearer $JWT" http://localhost:9001/oidc-resource-server/aod-only 
+```
+Although the JWT is valid, the user is not authorised to get that resource and you should get a _401_ return status.
 
 ## JavaScript front-end
 
