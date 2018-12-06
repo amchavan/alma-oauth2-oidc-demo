@@ -8,11 +8,16 @@
 
 const authServerUrl = 'https://ma24088.ads.eso.org:8019/cas'
 const resourceUrl = 'http://localhost:9000/oidc-resource-server/'
-const resource2Url = 'http://localhost:9001/oidc-resource-server/'
+const resource2Url = 'http://localhost:9001/oidc-resource-server/aod-only'
+const afterLogoutUrl = 'https://asa.alma.cl'
 const clientId = 'demoOIDC'
 
-function start( accessToken ) {
-    console.log( accessToken );
+function start() {
+
+    var accessToken = getAccessTokenFromStorage();
+    if( accessToken == null ) {
+        return;
+    }
 
     // Populate the "you are logged in as..." field
     var user_profile = jwtHelper.decodeToken(accessToken)
@@ -20,6 +25,8 @@ function start( accessToken ) {
 
     $("#get-resources").click( function() {     // Retrieve resources from two servers
         var bearerToken = 'Bearer ' + accessToken;
+
+        // First server: just get the resource and display it, report any error
         httpService.get( resourceUrl, { Authorization: bearerToken })
             .then( 
                 function( data, textStatus, jqXHR ) {
@@ -30,6 +37,8 @@ function start( accessToken ) {
                 simpleAjaxErrorHandler( resourceUrl )
                 );
 
+        // Second server: get the resource and display it: if the 
+        // response status is 401, display a conventional string
         httpService.get( resource2Url, { Authorization: bearerToken })
             .then( 
                 function( data, textStatus, jqXHR ) {
@@ -37,13 +46,37 @@ function start( accessToken ) {
                     $( "#resource2" ).text( data.content )
                 })
             .fail( 
-                simpleAjaxErrorHandler( resource2Url )
+                function( response, textStatus, errorThrown  ) {
+                    var sResponse = JSON.stringify(response);
+                    var oResponse = JSON.parse( sResponse );
+                    if( oResponse.status == 401 ) {
+                        $( "#resource2" ).text( "(Unauthorized)" )
+                    }
+                    else {
+                        var msg = url + "\n" +
+                                sResponse + "\n" +
+                                textStatus + "\n" +
+                                JSON.stringify( errorThrown );
+                        console.log( ">>> ERROR:", msg.replaceAll( '\n', '; '));
+                        alert( msg );
+                    }
+                }
                 );
+    });
+
+    $("#logout").click( function() {
+        // Logout protocol: remove the access token from the session storage, 
+        //                  invoke CAS' logout endpoint,
+        //                  redirect to ALMA
+        removeAccessTokenFromStorage();
+        // httpService.get( authServerUrl + '/logout' );
+        window.location.replace( authServerUrl + '/logout' );
     });
 }
 
 // Startup: obtain a valid access token, go on with our business
 $(document).ready( function() {
     var accessToken = obtainAccessToken( authServerUrl, clientId );
-    start( accessToken );
+    console.log( accessToken );
+    start();
 });
