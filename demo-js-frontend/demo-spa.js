@@ -70,7 +70,7 @@ function start() {
         //                  redirect to ALMA
         removeAccessTokenFromStorage();
         // httpService.get( authServerUrl + '/logout' );
-        window.location.replace( authServerUrl + '/logout' );
+        window.location.replace( authServerUrl + '/logout?service=' + afterLogoutUrl );
     });
 }
 
