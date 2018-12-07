@@ -59,6 +59,18 @@ To launch the SPA:
 cd demo-js-frontend
 python -m SimpleHTTPServer 8000
 ```
-Open a new private/incognito browser window and navigate to http://localhost:8000/demo-spa.html : you'll be redirected to the login page.  
-After successful login the SPA should show your user's ID and basic info.
+Navigate to http://localhost:8000/demo-spa.html : you'll be redirected to the login page.  
+After successful login the SPA should show your user ID and basic info. Clicking on the
+_Load resources_ button will query the resource servers and show the returned info.
 
+## CAS-secured server-side application
+
+A very simple Java server-side application that's secured via the CAS protocol, 
+to demonstrate Single Sign-On between CAS-secured and OIDC-secured resources.
+To launch the SPA:
+```
+cd demo-cas-client
+mvn clean spring-boot:run
+```
+Navigate to http://localhost:9002/ . 
+The welcome page is public: if you click on the _Login to see..._ button you'll be redirected to the CAS login page, then to a secured page that should show your user ID.
