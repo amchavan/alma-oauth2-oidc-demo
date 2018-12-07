@@ -29,31 +29,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LogoutFilter logoutFilter;
 
     @Autowired
-    public SecurityConfig(CasAuthenticationProvider casAuthenticationProvider, AuthenticationEntryPoint eP,
-                          LogoutFilter lF
-                          , SingleSignOutFilter ssF
-    ) {
+    public SecurityConfig( CasAuthenticationProvider casAuthenticationProvider, 
+    					   AuthenticationEntryPoint eP,
+                           LogoutFilter lF, 
+                           SingleSignOutFilter ssF ) {
+    	
         this.authenticationProvider = casAuthenticationProvider;
         this.authenticationEntryPoint = eP;
-
         this.logoutFilter = lF;
         this.singleSignOutFilter = ssF;
-
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
       http
-        .authorizeRequests()
-        .regexMatchers("/secured.*", "/login")
-        .authenticated()
+        .authorizeRequests().regexMatchers("/secured.*", "/login").authenticated()
         .and()
-        .authorizeRequests()
-        .regexMatchers("/")
-        .permitAll()
+        .authorizeRequests().regexMatchers("/").permitAll()
         .and()
-        .httpBasic()
-        .authenticationEntryPoint(authenticationEntryPoint)
+        .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
         .and()
         .logout().logoutSuccessUrl("/logout")
         .and()
@@ -79,5 +73,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       filter.setAuthenticationManager(authenticationManager());
       return filter;
     }
-
 }

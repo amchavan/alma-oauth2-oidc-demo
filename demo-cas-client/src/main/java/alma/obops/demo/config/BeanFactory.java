@@ -1,4 +1,4 @@
-package alma.obops.demo;
+package alma.obops.demo.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,9 +10,8 @@ import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.cas.ServiceProperties;
@@ -29,17 +28,13 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-@SpringBootApplication
-public class CasSecuredAppApplication {
+@Configuration
+public class BeanFactory {
 
 	private static final String CAS_SERVER_URL = "https://ma24088.ads.eso.org:8019";
+	
 	@Autowired
 	UserDetailsService userDetailsService;
-	
-	public static void main(String[] args) {
-//		System.out.println( ">>> HERE" );
-		SpringApplication.run(CasSecuredAppApplication.class, args);
-	}
 
 	@Bean
 	public ServiceProperties serviceProperties() {
