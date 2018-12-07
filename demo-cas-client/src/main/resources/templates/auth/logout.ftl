@@ -6,7 +6,7 @@
 </head>
 <body>
 <h1>Demo CAS-secured Spring Boot app</h1>
-<h2>You have logged out</h1>
+<h2>You have logged out</h2>
 <br>
 <a href="/logout/cas">Log out of all other Services</a>
 </body>
