@@ -1,4 +1,4 @@
-package alma.obops.demo.controllers;
+package com.baeldung.cassecuredapp.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
