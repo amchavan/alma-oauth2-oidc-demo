@@ -6,22 +6,18 @@
  * amchavan, 12-Apr-2017 
  */
 
-const authServerUrl = 'https://ma24088.ads.eso.org:8019/cas'
+const authServerUrl = 'https://www.eso.org/dev-keycloak/'
 const resourceUrl = 'http://localhost:9000/oidc-resource-server/'
 const resource2Url = 'http://localhost:9001/oidc-resource-server/aod-only'
 const afterLogoutUrl = 'https://asa.alma.cl'
-const clientId = 'demoOIDC'
+const clientId = 'oidc'
 
-function start() {
-
-    var accessToken = getAccessTokenFromStorage();
-    if( accessToken == null ) {
-        return;
-    }
+function start( accessToken ) {
 
     // Populate the "you are logged in as..." field
     var user_profile = jwtHelper.decodeToken(accessToken)
-    $( "#user" ).text( user_profile["sub"] + ' (' + user_profile["givenName"] + ' ' + user_profile["lastName"] + ')' );
+    $( "#userID" ).text( user_profile.preferred_username );
+    $( "#userFullName" ).text( user_profile.given_name + ' ' + user_profile.family_name );
 
     $("#get-resources").click( function() {     // Retrieve resources from two servers
         var bearerToken = 'Bearer ' + accessToken;
@@ -73,9 +69,21 @@ function start() {
     });
 }
 
-// Startup: obtain a valid access token, go on with our business
-$(document).ready( function() {
-    var accessToken = obtainAccessToken( authServerUrl, clientId );
-    console.log( accessToken );
-    start();
-});
+// Startup: obtain a valid access token, then save it and go on with our business
+$(document).ready( 
+    function() {
+        obtainAccessToken( authServerUrl, clientId )
+            .then( function( data ) {               
+                history.pushState( {}, '', redirectURI() );     // remove code, code_verifier, etc. request
+                                                                // parameters from the URL
+                sessionStorage.setItem( accessTokenKey, data.access_token ) // save access token for next time
+                start( data.access_token )                      // ...and go!
+            })
+            .catch(  
+                function( error ) {
+                    alert( JSON.stringify( error ))
+                    simpleAjaxErrorHandler( authServerUrl )()
+                }
+            ) 
+    }
+)

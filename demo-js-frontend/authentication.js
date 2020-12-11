@@ -3,21 +3,17 @@
  * amchavan, 12-Apr-2017 
  */
 
-const accessTokenKey = 'session-storage-access-token-key'
+const accessTokenKey = 'access-token-key'
 
-function extractAccessTokenFromURL() {
-    var fragment = location.hash.replace( '#', '' );
-    var accessToken = null;
-    if( fragment !== "" ) {
-        var params = fragment.split( '&' );
-        for( var i = 0; i < params.length; i++ ) {
-            if( params[i].indexOf( 'id_token=' ) === 0) {
-                accessToken = params[i].split("=")[1];
-                break;
-            }
-        }
-    }
-    return accessToken;
+function extractUrlParameter(name){
+    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+       return decodeURIComponent(name[1]);
+ }
+
+function extractAuthCodeParamsFromURL() {
+    var authCode     = extractUrlParameter( 'code' )
+    var codeVerifier = extractUrlParameter( 'code_verifier' )
+    return { authCode: authCode, codeVerifier: codeVerifier }
 }
 
 function getAccessTokenFromStorage() {
@@ -35,21 +31,22 @@ function removeAccessTokenFromStorage() {
  */
 function obtainAccessToken( authServerUrl, clientId ) {
 
-    var accessToken = extractAccessTokenFromURL();
-    if( accessToken != null ) {
-        sessionStorage.setItem( accessTokenKey, accessToken );
-        console.log( ">>> URL accessToken:", accessToken );
-        return accessToken
+    var accessToken;
+    var authCodeParams = extractAuthCodeParamsFromURL( authServerUrl, clientId )
+
+    if( authCodeParams.authCode != null ) {
+         return authCodeGrantStep2( authServerUrl, clientId, authCodeParams ) 
     }
 
-    var accessToken = sessionStorage.getItem( accessTokenKey );
-    if( (accessToken != null) && 
-        (accessToken != undefined) && 
-        (! jwtHelper.isTokenExpired( accessToken ))) {
-            console.log( ">>> stored accessToken:", accessToken );
-            return accessToken;
+    accessToken = sessionStorage.getItem( accessTokenKey )
+    if( accessToken && jwtHelper.isTokenValid( accessToken ) && (! jwtHelper.isTokenExpired( accessToken ))) {
+        console.log( ">>> access token (stored):", accessToken )
+        return new Promise( function(resolve, reject) { 
+            // reject remains unused
+            resolve( { access_token: accessToken } )
+        })
     }
-
-   accessToken = authenticate( authServerUrl, clientId );
-   return accessToken;
+    
+    sessionStorage.removeItem( accessTokenKey )     // just in case
+    authCodeGrant1( authServerUrl, clientId )
 };

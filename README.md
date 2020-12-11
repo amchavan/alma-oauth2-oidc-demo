@@ -57,7 +57,7 @@ the OIDC authentication server using the _Implicit_ grant, then accesses two res
 To launch the SPA:
 ```
 cd demo-js-frontend
-python -m SimpleHTTPServer 8000
+python -m http.server 8000
 ```
 Navigate to http://localhost:8000/demo-spa.html : you'll be redirected to the login page.  
 After successful login the SPA should show your user ID and basic info. Clicking on the

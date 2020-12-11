@@ -4,7 +4,7 @@
 	<title>Demo SPA</title>
 	<meta charset="UTF-8">
     <script src="jquery-3.2.1.min.js"></script>
-	<script src="oauth2-implicit-grant.js"></script>
+	<script src="oidc-grants.js"></script>
 	<script src="http-utils.js"></script>
 	<script src="jwt-helper.js"></script>
 	<script src="authentication.js"></script>
@@ -17,7 +17,7 @@
 <h1>Demo Single Page Application</h1>
 <div class="ui center aligned segment">
 	<div>
-		You are logged in as <span id="user"></span>
+		You are logged in as <em><span id="userID"></span></em> (<span id="userFullName"></span>)
 	</div>
 	<div class="ui horizontal divider"></div>
 	<div class="ui button" id="get-resources">Load resources</div>
