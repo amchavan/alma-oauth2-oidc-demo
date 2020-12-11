@@ -1,15 +1,14 @@
 package alma.obops.test.oidcresourceserver;
 
 
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import net.minidev.json.JSONArray;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * @author amchavan from the Spring Security 5.x samples
