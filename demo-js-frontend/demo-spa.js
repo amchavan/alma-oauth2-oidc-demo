@@ -8,19 +8,19 @@
 
 const authServerUrl = 'https://www.eso.org/dev-keycloak/'
 const resourceUrl = 'http://localhost:9000/oidc-resource-server/'
-const resource2Url = 'http://localhost:9001/oidc-resource-server/aod-only'
+const resource2Url = 'http://localhost:9001/oidc-resource-server/arp-only'
 const afterLogoutUrl = 'https://asa.alma.cl'
 const clientId = 'oidc'
 
 function start( accessToken ) {
 
     // Populate the "you are logged in as..." field
-    var user_profile = jwtHelper.decodeToken(accessToken)
+    const user_profile = jwtHelper.decodeToken(accessToken);
     $( "#userID" ).text( user_profile.preferred_username );
     $( "#userFullName" ).text( user_profile.given_name + ' ' + user_profile.family_name );
 
     $("#get-resources").click( function() {     // Retrieve resources from two servers
-        var bearerToken = 'Bearer ' + accessToken;
+        const bearerToken = 'Bearer ' + accessToken;
 
         // First server: just get the resource and display it, report any error
         httpService.get( resourceUrl, { Authorization: bearerToken })
@@ -43,16 +43,16 @@ function start( accessToken ) {
                 })
             .fail( 
                 function( response, textStatus, errorThrown  ) {
-                    var sResponse = JSON.stringify(response);
-                    var oResponse = JSON.parse( sResponse );
-                    if( oResponse.status == 401 ) {
+                    const sResponse = JSON.stringify(response);
+                    const oResponse = JSON.parse(sResponse);
+                    if( oResponse.status === 401 ) {
                         $( "#resource2" ).text( "(Unauthorized)" )
                     }
                     else {
-                        var msg = url + "\n" +
-                                sResponse + "\n" +
-                                textStatus + "\n" +
-                                JSON.stringify( errorThrown );
+                        const msg = resource2Url + "\n" +
+                            sResponse + "\n" +
+                            textStatus + "\n" +
+                            JSON.stringify(errorThrown);
                         console.log( ">>> ERROR:", msg.replaceAll( '\n', '; '));
                         alert( msg );
                     }
