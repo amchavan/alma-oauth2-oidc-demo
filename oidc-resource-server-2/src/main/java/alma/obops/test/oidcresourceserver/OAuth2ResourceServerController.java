@@ -2,7 +2,9 @@ package alma.obops.test.oidcresourceserver;
 
 
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import net.minidev.json.JSONArray;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,19 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OAuth2ResourceServerController {
 
-	@GetMapping( "/aod-only" )
-	@PreAuthorize( "hasAuthority('OBOPS/AOD')" )
+	@GetMapping( "/arp-only" )
 	public Object privateMessage( @AuthenticationPrincipal Jwt jwt ) {
-		return new Message( "OBOPS/AOD" );
+		JSONArray roles = jwt.getClaim( "roles" );
+		return new Message( roles.stream()
+				.map(Object::toString)
+				.collect(Collectors.joining( ", " )));
 	}
 }
 
 class Message {
-	private String id = UUID.randomUUID().toString();
-	private String content;
-
-	Message() {
-	}
+	private final String id = UUID.randomUUID().toString();
+	private final String content;
 
 	public Message(String content) {
 		this.content = content;

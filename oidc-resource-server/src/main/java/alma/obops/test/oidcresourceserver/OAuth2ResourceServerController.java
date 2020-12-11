@@ -16,17 +16,13 @@ public class OAuth2ResourceServerController {
 
 	@GetMapping("/")
 	public Object index(@AuthenticationPrincipal Jwt jwt) {
-		Message msg = new Message( String.format( "Hello, %s!", jwt.getSubject()) );
-		return msg;
+		return new Message( String.format( "Hello, %s!", jwt.getClaims().get( "given_name" )));
 	}
 }
 
 class Message {
-	private String id = UUID.randomUUID().toString();
-	private String content;
-
-	Message() {
-	}
+	private final String id = UUID.randomUUID().toString();
+	private final String content;
 
 	public Message(String content) {
 		this.content = content;
