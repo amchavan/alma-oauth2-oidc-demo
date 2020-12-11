@@ -80,10 +80,7 @@ $(document).ready(
                 start( data.access_token )                      // ...and go!
             })
             .catch(  
-                function( error ) {
-                    alert( JSON.stringify( error ))
-                    simpleAjaxErrorHandler( authServerUrl )()
-                }
+                simpleAjaxErrorHandler( authServerUrl )
             ) 
     }
 )
