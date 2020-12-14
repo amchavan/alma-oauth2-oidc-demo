@@ -1,10 +1,5 @@
 package alma.obops.demo.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.servlet.http.HttpSessionEvent;
-
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
@@ -23,16 +18,19 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
+import javax.servlet.http.HttpSessionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Configuration
 public class BeanFactory {
 
-	private static final String CAS_SERVER_URL = "https://ma24088.ads.eso.org:8019";
-	
+	private static final String CAS_SERVER_URL = "https://asa.alma.cl/cas";
+
 	@Autowired
 	UserDetailsService userDetailsService;
 
@@ -48,14 +46,14 @@ public class BeanFactory {
 	@Primary
 	public AuthenticationEntryPoint authenticationEntryPoint(ServiceProperties sP) {
 	  CasAuthenticationEntryPoint entryPoint = new CasAuthenticationEntryPoint();
-		entryPoint.setLoginUrl(CAS_SERVER_URL + "/cas/login");
+		entryPoint.setLoginUrl(CAS_SERVER_URL + "/login");
 		entryPoint.setServiceProperties(sP);
 	  return entryPoint;
 	}
 
 	@Bean
 	public TicketValidator ticketValidator() {
-		return new Cas30ServiceTicketValidator(CAS_SERVER_URL + "/cas");
+		return new Cas30ServiceTicketValidator(CAS_SERVER_URL);
 	}
 
 	@Bean
@@ -64,8 +62,8 @@ public class BeanFactory {
 	  CasAuthenticationProvider provider = new CasAuthenticationProvider();
 	  provider.setServiceProperties(serviceProperties());
 	  provider.setTicketValidator(ticketValidator());
-	  UserDetailsByNameServiceWrapper<CasAssertionAuthenticationToken> t = 
-			  new UserDetailsByNameServiceWrapper<CasAssertionAuthenticationToken>(userDetailsService);
+	  UserDetailsByNameServiceWrapper<CasAssertionAuthenticationToken> t =
+			  new UserDetailsByNameServiceWrapper<>(userDetailsService);
 	  provider.setAuthenticationUserDetailsService( t );
 	  provider.setKey("CAS_PROVIDER_LOCALHOST_9002");
 	  return provider;
@@ -73,14 +71,7 @@ public class BeanFactory {
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new UserDetailsService() {
-
-			@Override
-			public UserDetails loadUserByUsername( String username ) throws UsernameNotFoundException {
-				UserDetails ret = new SimpleUserDetails( username );
-				return ret;
-			}	
-		};
+		return SimpleUserDetails::new;
 	}
 
 	@Bean
@@ -91,7 +82,7 @@ public class BeanFactory {
 	@Bean
 	public LogoutFilter logoutFilter() {
 	  LogoutFilter logoutFilter = new LogoutFilter(
-			  CAS_SERVER_URL + "/cas/logout", securityContextLogoutHandler());
+			  CAS_SERVER_URL + "/logout", securityContextLogoutHandler());
 	  logoutFilter.setFilterProcessesUrl("/logout/cas");
 	  return logoutFilter;
 	}
@@ -99,7 +90,7 @@ public class BeanFactory {
 	@Bean
 	public SingleSignOutFilter singleSignOutFilter() {
 	  SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-	  singleSignOutFilter.setCasServerUrlPrefix( CAS_SERVER_URL + "/cas" );
+	  singleSignOutFilter.setCasServerUrlPrefix( CAS_SERVER_URL );
 	  singleSignOutFilter.setIgnoreInitConfiguration(true);
 	  return singleSignOutFilter;
 	}
@@ -114,7 +105,7 @@ public class BeanFactory {
 class SimpleUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
-	private String username;
+	private final String username;
 	
 	public SimpleUserDetails( String username ) {
 		this.username = username;
@@ -122,7 +113,7 @@ class SimpleUserDetails implements UserDetails {
 	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		ArrayList<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		ArrayList<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add( new SimpleGrantedAuthority( "ROLE_ADMIN" ));
 		return authorities;
 	}
