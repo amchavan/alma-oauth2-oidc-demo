@@ -1,52 +1,54 @@
 /**
- * TODO
- * amchavan, 12-Apr-2017 
+ * Authenticate and obtain an access token
+ * amchavan, 12-Apr-2017
+ * amchavan, 14-Dec-2020
  */
 
 const accessTokenKey = 'access-token-key'
 
-function extractUrlParameter(name){
-    if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
-       return decodeURIComponent(name[1]);
+function extractUrlParameter(parameterName){
+    const parameterPattern = '[?&]' + encodeURIComponent( parameterName ) + '=([^&]*)';
+    const parameterRegExp = new RegExp( parameterPattern );
+    const parameter = parameterRegExp.exec( location.search );
+    if( parameter ) {
+        return decodeURIComponent(parameter[1]);
+    }
+    return undefined;
  }
 
 function extractAuthCodeParamsFromURL() {
-    var authCode     = extractUrlParameter( 'code' )
-    var codeVerifier = extractUrlParameter( 'code_verifier' )
+    const authCode = extractUrlParameter('code');
+    const codeVerifier = extractUrlParameter('code_verifier');
     return { authCode: authCode, codeVerifier: codeVerifier }
-}
-
-function getAccessTokenFromStorage() {
-    return sessionStorage.getItem( accessTokenKey );
 }
 
 function removeAccessTokenFromStorage() {
     sessionStorage.removeItem( accessTokenKey );
 }
 
-/* 
- * Obtain a valid access token from the URL, 
- * from the session storage, or by redirecting to the
- * authentication server.
+/**
+ * Obtain a valid access token from the Identity Provider URL
+ * or from the session storage. If neither are possible,
+ * redirect to the IP
+ *
+ * @return A promise with the token
  */
 function obtainAccessToken( authServerUrl, clientId ) {
 
-    var accessToken;
-    var authCodeParams = extractAuthCodeParamsFromURL( authServerUrl, clientId )
-
+    const authCodeParams = extractAuthCodeParamsFromURL(authServerUrl, clientId);
     if( authCodeParams.authCode != null ) {
          return authCodeGrantStep2( authServerUrl, clientId, authCodeParams ) 
     }
 
-    accessToken = sessionStorage.getItem( accessTokenKey )
-    if( accessToken && jwtHelper.isTokenValid( accessToken ) && (! jwtHelper.isTokenExpired( accessToken ))) {
+    const accessToken = sessionStorage.getItem( accessTokenKey )
+    if( accessToken && isTokenValid( accessToken ) && (! isTokenExpired( accessToken ))) {
         console.log( ">>> access token (stored):", accessToken )
         return new Promise( function(resolve, reject) { 
-            // reject remains unused
+            // reject callback is unused here
             resolve( { access_token: accessToken } )
         })
     }
     
     sessionStorage.removeItem( accessTokenKey )     // just in case
     authCodeGrant1( authServerUrl, clientId )
-};
+}

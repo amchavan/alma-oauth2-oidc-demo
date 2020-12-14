@@ -7,66 +7,26 @@
  */
 
 const authServerUrl = 'https://www.eso.org/dev-keycloak/'
-const resourceUrl = 'http://localhost:9000/oidc-resource-server/'
-const resource2Url = 'http://localhost:9001/oidc-resource-server/arp-only'
-const afterLogoutUrl = 'https://asa.alma.cl'
+const publicResourceUrl = 'http://localhost:9000/oidc-resource-server/'
+const protectedResourceUrl = 'http://localhost:9001/oidc-resource-server/arp-only'
 const clientId = 'oidc'
 
 function start( accessToken ) {
 
-    // Populate the "you are logged in as..." field
-    const user_profile = jwtHelper.decodeToken(accessToken);
-    $( "#userID" ).text( user_profile.preferred_username );
-    $( "#userFullName" ).text( user_profile.given_name + ' ' + user_profile.family_name );
+    const userProfile = decodeToken(accessToken);
+    const authorizationHeader = 'Bearer ' + accessToken;
 
-    $("#get-resources").click( function() {     // Retrieve resources from two servers
-        const bearerToken = 'Bearer ' + accessToken;
+    // Username and full name we get from the access token
+    $( "#userID" ).text( userProfile.preferred_username );
+    $( "#userFullName" ).text( userProfile.given_name + ' ' + userProfile.family_name );
 
-        // First server: just get the resource and display it, report any error
-        httpService.get( resourceUrl, { Authorization: bearerToken })
-            .then( 
-                function( data, textStatus, jqXHR ) {
-                    console.log( ">>> RESOURCE:", JSON.stringify( data ));
-                    $( "#resource" ).text( data.content )
-                })
-            .fail( 
-                simpleAjaxErrorHandler( resourceUrl )
-                );
-
-        // Second server: get the resource and display it: if the 
-        // response status is 401, display a conventional string
-        httpService.get( resource2Url, { Authorization: bearerToken })
-            .then( 
-                function( data, textStatus, jqXHR ) {
-                    console.log( ">>> RESOURCE2:", JSON.stringify( data ));
-                    $( "#resource2" ).text( data.content )
-                })
-            .fail( 
-                function( response, textStatus, errorThrown  ) {
-                    const sResponse = JSON.stringify(response);
-                    const oResponse = JSON.parse(sResponse);
-                    if( oResponse.status === 401 ) {
-                        $( "#resource2" ).text( "(Unauthorized)" )
-                    }
-                    else {
-                        const msg = resource2Url + "\n" +
-                            sResponse + "\n" +
-                            textStatus + "\n" +
-                            JSON.stringify(errorThrown);
-                        console.log( ">>> ERROR:", msg.replaceAll( '\n', '; '));
-                        alert( msg );
-                    }
-                }
-                );
-    });
-
-    $("#logout").click( function() {
-        // Logout protocol: remove the access token from the session storage, 
-        //                  redirect to CAS' logout endpoint, which in turn
-        //                  redirects to ALMA
-        removeAccessTokenFromStorage();
-        window.location.replace( authServerUrl + '/logout?service=' + afterLogoutUrl );
-    });
+    // Retrieve and display a public and a protected resource
+    // The protected resource will be returned only if we have the OBOPS/ARP role
+    $("#get-resources").click( retrieveResources(   publicResourceUrl,    "#publicResource",
+                                                    protectedResourceUrl, "#protectedResource",
+                                                    authorizationHeader ))
+    // The logout button will, ha!, log us out
+    $("#logout").click( logout( authServerUrl ));
 }
 
 // Startup: obtain a valid access token, then save it and go on with our business
@@ -74,8 +34,8 @@ $(document).ready(
     function() {
         obtainAccessToken( authServerUrl, clientId )
             .then( function( data ) {               
-                history.pushState( {}, '', redirectURI() );     // remove code, code_verifier, etc. request
-                                                                // parameters from the URL
+                history.replaceState( {}, '', redirectHereURI() );  // remove code, code_verifier, etc. request...
+                                                                    // ...parameters from the URL
                 sessionStorage.setItem( accessTokenKey, data.access_token ) // save access token for next time
                 start( data.access_token )                      // ...and go!
             })

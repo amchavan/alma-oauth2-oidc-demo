@@ -8,6 +8,7 @@
 	<script src="http-utils.js"></script>
 	<script src="jwt-helper.js"></script>
 	<script src="authentication.js"></script>
+	<script src="resource-provider.js"></script>
 	<script src="demo-spa.js"></script>
 	<link rel="stylesheet"
 		  href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css"/>
@@ -21,7 +22,8 @@
 	</div>
 	<div class="ui horizontal divider"></div>
 	<div class="ui button" id="get-resources">Load resources</div>
-	<div id="resource"></div> <div id="resource2"></div>
+	<div>Public resource: <span id="publicResource"></span></div>
+	<div>Protected resource: <span id="protectedResource"></span></div>
 	<div class="ui horizontal divider"></div>
 	<div class="ui button" id="logout">Log out</div>
 </div>
