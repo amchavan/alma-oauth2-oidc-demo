@@ -29,12 +29,9 @@
         <td>Exception</td>
         <td>${exception!"No exception thrown"}</td>
     </tr>
-    <!-- <tr>
-        <td>Trace</td>
-        <td>
-            <pre>${trace!"No Stacktrace available"}</pre>
-        </td>
-    </tr> -->
 </table>
+<div>
+    <a class="ui button" href="/">Home</a>
+</div>
 </body>
 </html>
