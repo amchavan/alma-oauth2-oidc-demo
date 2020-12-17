@@ -32,7 +32,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
      */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider = new KeycloakUserDetailsAuthenticationProvider();
+        KeycloakAuthenticationProvider keycloakAuthenticationProvider = new AlmaKeycloakAuthenticationProvider();
         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
         auth.authenticationProvider( keycloakAuthenticationProvider );
     }
@@ -57,20 +57,11 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
-    @Autowired
-    public KeycloakClientRequestFactory keycloakClientRequestFactory;
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public KeycloakRestTemplate keycloakRestTemplate() {
-        return new KeycloakRestTemplate(keycloakClientRequestFactory);
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
-                .authorizeRequests().regexMatchers("/secured.*", "/login").authenticated()
+                .authorizeRequests().regexMatchers("/secured.*", "/login").hasAuthority( "OBOPS/ARP" )
                 .and()
                 .authorizeRequests().regexMatchers("/").permitAll()
                 .anyRequest().permitAll();
