@@ -15,9 +15,8 @@ public class SecuredPageController {
     @GetMapping
     public String index(ModelMap modelMap) {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-      if( auth != null && auth.getPrincipal() != null
-          && auth.getPrincipal() instanceof UserDetails) {
-        modelMap.put("username", ((UserDetails) auth.getPrincipal()).getUsername());
+      if( auth != null && auth.getPrincipal() != null ) {
+        modelMap.put("username", auth.getPrincipal() );
       }
       return "secure/index";
     }

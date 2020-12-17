@@ -17,9 +17,11 @@ public class AuthController {
 //    private Logger logger = LogManager.getLogger(AuthController.class);
 
     @GetMapping("/logout")
-    public String logout(
-      HttpServletRequest request, HttpServletResponse response, SecurityContextLogoutHandler logoutHandler) {
+    public String logout( HttpServletRequest request,
+                          HttpServletResponse response,
+                          SecurityContextLogoutHandler logoutHandler )  {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      logoutHandler.setInvalidateHttpSession( true );
       logoutHandler.logout(request, response, auth );
       new CookieClearingLogoutHandler(AbstractRememberMeServices.SPRING_SECURITY_REMEMBER_ME_COOKIE_KEY).logout(request, response, auth);
       return "auth/logout";
