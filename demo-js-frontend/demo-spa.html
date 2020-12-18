@@ -18,12 +18,15 @@
 <h1>Demo Single Page Application</h1>
 <div class="ui center aligned segment">
 	<div>
-		You are logged in as <em><span id="userID"></span></em> (<span id="userFullName"></span>)
+		You are logged in as <em><span id="userID"></span></em>
+		<br>
+		(<span id="userFullName"></span>, <span id="userRoles"></span>)
 	</div>
 	<div class="ui horizontal divider"></div>
 	<div class="ui button" id="get-resources">Load resources</div>
-	<div>Public resource: <span id="publicResource"></span></div>
-	<div>Protected resource: <span id="protectedResource"></span></div>
+	<div>"Authenticated" resource:    <span id="publicResource"></span></div>
+	<div>"OBOPS/ARCA" resource: <span id="arcaResource"></span></div>
+	<div>"OBOPS/ARP" resource: <span id="arpResource"></span></div>
 	<div class="ui horizontal divider"></div>
 	<div class="ui button" id="logout">Log out</div>
 </div>

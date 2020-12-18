@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
  * @author amchavan, 11-Dec-2020
  */
 @EnableWebSecurity
-public class CustomSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers( "/arp-only/**" ).hasAuthority( "OBOPS/ARP" )
+                        .antMatchers( "/protected/**" ).hasAuthority( "OBOPS/ARCA" )
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer( oauth2 ->
