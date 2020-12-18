@@ -1,25 +1,9 @@
-<html lang="en">
-<head>
-    <title>Demo Keycloak-secured Spring Boot app - error</title>
-    <link rel="stylesheet"
-		  href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.0/semantic.min.css"/>
- 
-</head>
-<body>
-<h1>Demo Keycloak-secured Spring Boot app</h1>
-<h2>Error</h2>
+<#include "*/common/header.ftl">
+<h2>Error <em>${status} ${error}</em></h2>
 <table>
     <tr>
         <td>Date</td>
         <td>${timestamp?datetime}</td>
-    </tr>
-    <tr>
-        <td>Error</td>
-        <td>${error}</td>
-    </tr>
-    <tr>
-        <td>Status</td>
-        <td>${status}</td>
     </tr>
     <tr>
         <td>Message</td>
@@ -27,11 +11,11 @@
     </tr>
     <tr>
         <td>Exception</td>
-        <td>${exception!"No exception thrown"}</td>
+        <td>${exception!"(no exception thrown)"}</td>
     </tr>
 </table>
+<p></p>
 <div>
     <a class="ui button" href="/">Home</a>
 </div>
-</body>
-</html>
+<#include "*/common/footer.ftl">
