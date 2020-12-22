@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Scratch</title>
+	<meta charset="UTF-8">
+	<script src="http-utils-2.js"></script>
+</head>
+<body>
+
+<h1>Scratch</h1>
+<p id="a"></p>
+</body>
+<script>
+
+	const p = document.getElementById('a')
+
+	function publishResults(text) {
+		p.appendChild(document.createTextNode(text));
+	}
+
+
+	// const url = 'http://localhost:9000/oidc-resource-server/any'
+	// const url = 'https://status-codes.glitch.me/status/502'
+	const url = 'https://jsonplaceholder.typicode.com/todos/1'
+
+
+	document.addEventListener( "DOMContentLoaded", () => {
+		fetchWithRetry( url, undefined, 5, 500, 1.25 )
+				.then( json => publishResults( 'Data:' + JSON.stringify( json )))
+				.catch( error => publishResults( 'ERROR: ' + error.message))
+	})
+</script>
+</html>
