@@ -9,25 +9,45 @@
 
 <h1>Scratch</h1>
 <p id="a"></p>
+<p id="b"></p>
+<p id="c"></p>
 </body>
 <script>
 
-	const p = document.getElementById('a')
-
-	function publishResults(text) {
-		p.appendChild(document.createTextNode(text));
+	function publishResults( text) {
+		document.getElementById(id).textContent = text
 	}
 
+	function log( retries, backoff ) {
+		const msg = "Request failed, retrying in " + backoff + " msec, remaining retries: " + retries
+		publishResults( msg )
+		console.error( msg )
+	}
 
-	// const url = 'http://localhost:9000/oidc-resource-server/any'
-	// const url = 'https://status-codes.glitch.me/status/502'
-	const url = 'https://jsonplaceholder.typicode.com/todos/1'
+	const retryOptions = {
+		retries: 2,
+		backoff: 1000,
+		backoffFactor: 1,
+		callback: log
+	}
 
+	const url1 = 'http://localhost:9000/oidc-resource-server/now'
+	const url2 = 'https://status-codes.glitch.me/status/502'
+	const url3 = 'https://i-do-not-really-exists.qqq/api/ghost/1'
 
 	document.addEventListener( "DOMContentLoaded", () => {
-		fetchWithRetry( url, undefined, 5, 500, 1.25 )
+
+		fetchWithRetry( url1, undefined, retryOptions )
+				.then( json => publishResults( 'a', 'Data:' + JSON.stringify( json )))
+				.catch( error => publishResults( 'a', 'ERROR: ' + error.message))
+
+		fetchWithRetry( url2, undefined, retryOptions )
 				.then( json => publishResults( 'Data:' + JSON.stringify( json )))
 				.catch( error => publishResults( 'ERROR: ' + error.message))
+
+		fetchWithRetry( url3, undefined, retryOptions )
+				.then( json => publishResults( 'c', 'Data:' + JSON.stringify( json )))
+				.catch( error => publishResults( 'c', 'ERROR: ' + error.message))
 	})
 </script>
 </html>
