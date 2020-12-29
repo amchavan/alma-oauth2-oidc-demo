@@ -4,32 +4,44 @@
  * @author amchavan, 14-Dec-2020
  */
 
+
+/**
+ * Get the resource at the URL and display it in the DOM element. If
+ * response status is 401/403, display a conventional message instead
+ */
 function retrieveResource( url, domElement, authorizationHeader ) {
 
-    // Second server: get the resource and display it: if the
-    // response status is 401/403, display a conventional string
-    httpService
-        .get( url, { Authorization: authorizationHeader })
-        .then(
-            function( data ) {       // could be function( data, textStatus, jqXHR )
-                console.log( ">>> " + domElement + ":", JSON.stringify( data ));
-                $( domElement ).text( data.content )
+    const fetchOptions = {
+        headers: {
+            Authorization: authorizationHeader
+        }
+    }
+
+    const retryOptions = {
+        retries: 5,
+        backoff: 1000,
+        backoffFactor: 1.25,
+        // callback: log
+    }
+
+    document.getElementById( domElement ).textContent = ''
+
+    fetchWithRetry( url, fetchOptions, retryOptions )
+
+        .then( data => {
+            console.log( ">>> " + domElement + ":", JSON.stringify( data ));
+            document.getElementById( domElement ).textContent = data.content
             })
-        .fail(
-            function( response, textStatus, errorThrown  ) {
-                const sResponse = JSON.stringify(response);
-                const oResponse = JSON.parse(sResponse);
-                if( oResponse.status === 401 || oResponse.status === 403 ) {
-                    $( domElement ).text( "(Unauthorized)" )
+
+        .catch( error => {
+                console.error("While fetching", url, ":", JSON.stringify(error))
+                if (error.status === 401 || error.status === 403) {
+                    document.getElementById( domElement ).textContent = '(Unauthorized)'
                 }
                 else {
-                    const msg = url + "\n" +
-                        sResponse + "\n" +
-                        textStatus + "\n" +
-                        JSON.stringify(errorThrown);
-                    console.log( ">>> ERROR:", msg.replaceAll( '\n', '; '));
-                    alert( msg );
+                    let errorMessage = 'Error ' + error.status + ': ' + error.message;
+                    document.getElementById( domElement )
+                            .insertAdjacentHTML( 'afterbegin', '<strong>' + errorMessage + '</strong>' );
                 }
-            }
-        )
+            })
 }

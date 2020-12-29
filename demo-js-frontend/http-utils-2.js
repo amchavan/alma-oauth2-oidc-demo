@@ -1,16 +1,25 @@
 /**
  * @author amchavan, 22-Dec-2020
- * Adapted from https://blog.bearer.sh/add-retry-to-api-calls-javascript-node
- * (original version does not work; added proper timoeout from
- * https://stackoverflow.com/questions/33289726/combination-of-async-function-await-settimeout/33292942)
  */
 
 class HttpError extends Error {
-    constructor( message ) {
-        super( message )
-        this.message = message
+    constructor( response ) {
+        super( response.message ? response.message : response.status )
+        this.status = response.status === undefined ? 0 : response.status
+        this.message = response.message
     }
 }
+
+/** List of response status values that warrant a retry */
+const RETRY_STATUS_VALUES = [
+        408,    // Request Timeout
+        429,    // Too Many Requests
+        500,    // Internal error
+        502,    // Bad Gateway
+        503,    // Service Unavailable
+        504,    // Gateway Timeout
+    ]
+
 
 /**
  * retries:       Number of retries, defaults to zero (fails after first error)
@@ -46,7 +55,8 @@ async function fetchWithRetryInternal(url, fetchOptions, response, retryOptions 
         return response.json()
     }
     else {
-        if (retryOptions.retries > 0) {
+        let couldRetry = response.status === undefined || RETRY_STATUS_VALUES.includes( response.status )
+        if( retryOptions.retries > 0 && couldRetry )  {
             if( retryOptions.callback ) {
                 retryOptions.callback( retryOptions.retries, retryOptions.backoff )
             }
@@ -58,7 +68,7 @@ async function fetchWithRetryInternal(url, fetchOptions, response, retryOptions 
         }
         else {
             // Signal end of recursion
-            throw new HttpError( response.message ? response.message : response.status );
+            throw new HttpError( response );
         }
     }
 }

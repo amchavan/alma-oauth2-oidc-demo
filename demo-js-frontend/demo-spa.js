@@ -1,15 +1,13 @@
 /**
- * Proof of concept, pure JS client for OAuth2 Implicit Grant
+ * Proof of concept, pure JS client for OIDC
  * To run, navigate to localhost:8000 in the browser, will redirect to login page
- * Reload the page to see the interaction with the resource servers
- * 
+ *
  * amchavan, 12-Apr-2017 
  */
 
 const authServerUrl = 'https://www.eso.org/dev-keycloak/'
-const publicResourceUrl = 'http://localhost:9000/oidc-resource-server/'
+const datetimeUrl = 'http://localhost:9000/oidc-resource-server/datetime'
 const arcaResourceUrl = 'http://localhost:9002/oidc-resource-server/protected/arca-only'
-// const arcaResourceUrl = 'http://localhost:9003/oidc-resource-server/service/api/datetime'
 const arpResourceUrl = 'http://localhost:9003/oidc-resource-server/service/api/secret'
 const clientId = 'oidc'
 
@@ -19,9 +17,9 @@ function start( accessToken ) {
     const authorizationHeader = 'Bearer ' + accessToken;
 
     // Username and full name we get from the access token
-    $( "#userID" ).text( userProfile.preferred_username );
-    $( "#userFullName" ).text( userProfile.given_name + ' ' + userProfile.family_name );
-    $( "#userRoles" ).text( userProfile.roles )
+    $( "#userID" ).text( userProfile['preferred_username'] );
+    $( "#userFullName" ).text( userProfile['given_name'] + ' ' + userProfile['family_name'] );
+    $( "#userRoles" ).text( userProfile['roles'] )
 
     // Retrieve and display a public and a protected resource
     // The protected resource will be returned only if we have the OBOPS/ARP role
@@ -30,19 +28,34 @@ function start( accessToken ) {
     $("#logout").click( logout( authServerUrl ));
 }
 
-// Return function to be invoked when clicking on the #get-resources button:
-// it will several resources
+// Retrieve the current datetime from the public resource server and display it
+function retrieveCurrentDatetime() {
+    fetch( datetimeUrl )
+        .then( response => response.json() )
+        .then( data => {
+            console.log( data );
+            document.getElementById("datetime").textContent = data['datetime'].split('T')[1]
+        })
+        .catch( error => {
+            let errorString = JSON.stringify( error )
+            console.error( errorString )
+            // document.getElementById("datetime").textContent = error.message
+            alert( errorString )
+        })
+}
+
+// Return function to be invoked when clicking on the #get-resources button,
+// it will retrieve several resources
 function getResources( authorizationHeader ) {
     return function () {
-        retrieveResource( publicResourceUrl, "#publicResource", authorizationHeader )
-        retrieveResource( arcaResourceUrl,   "#arcaResource",   authorizationHeader )
-        retrieveResource( arpResourceUrl,    "#arpResource",    authorizationHeader )
+        retrieveResource( arcaResourceUrl,   "arcaResource",   authorizationHeader )
+        retrieveResource( arpResourceUrl,    "arpResource",    authorizationHeader )
     }
 }
 
 // Startup: obtain a valid access token, then save it and go on with our business
-$(document).ready( 
-    function() {
+document.addEventListener( "DOMContentLoaded", () => {
+        retrieveCurrentDatetime()
         obtainAccessToken( authServerUrl, clientId )
             .then( function( data ) {
                 // Update the URL displayed in the browser:
