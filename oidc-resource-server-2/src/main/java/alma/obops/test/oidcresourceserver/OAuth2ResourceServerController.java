@@ -20,10 +20,18 @@ public class OAuth2ResourceServerController {
 	static int nextID = 0;
 
 	@GetMapping( "/arca-only" )
-	public Object secret( @AuthenticationPrincipal Jwt jwt ) {
+	public Object arcaOnly( @AuthenticationPrincipal Jwt jwt ) {
 		Map<String,Object> model = new HashMap<>();
 		model.put( "id", nextID++ );
-		model.put( "content", jwt.getClaim( "preferred_username" ) + "-" + UUID.randomUUID() );
+		model.put( "content", UUID.randomUUID() );
+		return model;
+	}
+
+	@GetMapping( "/authenticated" )
+	public Object authenticated( @AuthenticationPrincipal Jwt jwt ) {
+		Map<String,Object> model = new HashMap<>();
+		model.put( "id", nextID++ );
+		model.put( "content", "You are authenticated as " + jwt.getClaim( "preferred_username" ));
 		return model;
 	}
 }

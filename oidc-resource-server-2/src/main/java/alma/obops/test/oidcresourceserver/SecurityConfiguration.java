@@ -20,7 +20,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests(authorize -> authorize
-                        .antMatchers( "/protected/**" ).hasAuthority( "OBOPS/ARCA" )
+                        .antMatchers( "/**/arca-only" ).hasAuthority( "OBOPS/ARCA" )
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer( oauth2 ->
