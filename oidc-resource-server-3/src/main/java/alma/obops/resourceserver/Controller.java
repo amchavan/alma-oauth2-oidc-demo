@@ -1,7 +1,6 @@
 package alma.obops.resourceserver;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * @author amchavan 30-Dec-2020
+ */
+
 @RestController
 @RequestMapping("/service/api")
-@CrossOrigin(allowCredentials="true")
+@CrossOrigin
 public class Controller {
     static int nextID = 0;
 
