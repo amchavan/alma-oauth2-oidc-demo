@@ -52,3 +52,4 @@ Assuming the Keycloak Identity Provider is up and running:
   ```
   It will be available at http://localhost:8000/demo-spa.html
 
+After logging in on one application you should be authenticated on the other one as well (Single Sign-On).
