@@ -13,6 +13,7 @@ import java.util.Map;
  * @author amchavan
  */
 @RestController
+@CrossOrigin
 public class MainController {
 
 	final private TimeService timeService;
@@ -29,7 +30,6 @@ public class MainController {
 	 * {@code curl -u user:passwd http://localhost:10020/angular-spring-seed/service/api/datetime?timezone=Europe/Paris}
 	 */
 	@GetMapping( value = "/datetime" )
-	@CrossOrigin
 	public Object doDatetime( @RequestParam( name = "timezone", defaultValue = "UTC" ) String timeZone,
 							  HttpServletResponse response ) {
 		try {
