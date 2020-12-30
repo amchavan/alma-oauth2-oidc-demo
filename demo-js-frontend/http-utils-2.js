@@ -1,7 +1,11 @@
 /**
+ * Inspired by https://blog.bearer.sh/add-retry-to-api-calls-javascript-node/ (which does not work)
  * @author amchavan, 22-Dec-2020
  */
 
+/**
+ * Local error class
+ */
 class HttpError extends Error {
     constructor( response ) {
         super( response.message ? response.message : response.status )
@@ -92,4 +96,21 @@ function fetchWithRetry( url, fetchOptions, retryOptions ) {
     return fetch( url, fetchOptions )
         .then( response => fetchWithRetryInternal( url, fetchOptions, response, finalRetryOptions ))
         .catch( reason  => fetchWithRetryInternal( url, fetchOptions, reason,   finalRetryOptions ))
+}
+
+function getWithRetry( url, headers, retryOptions ) {
+    const fetchOptions = headers ? { headers: headers } : undefined
+    return fetchWithRetry( url, fetchOptions, retryOptions )
+}
+
+function simpleAjaxErrorHandler( url ) {
+    return function( response, textStatus, errorThrown  ) {
+
+        const msg = url + "\n" +
+            JSON.stringify(response) + "\n" +
+            textStatus + "\n" +
+            JSON.stringify(errorThrown);
+        console.log( ">>> ERROR:", msg.replaceAll( '\n', '; '));
+        alert( msg );
+    }
 }

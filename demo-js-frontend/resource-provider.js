@@ -6,16 +6,12 @@
 
 
 /**
- * Get the resource at the URL and display it in the DOM element. If
+ * Get the resource at the URL and display its dataField in the domElement. If
  * response status is 401/403, display a conventional message instead
  */
-function retrieveResource( url, domElement, authorizationHeader ) {
+function retrieveResource( url, dataField, domElement, authorizationHeader ) {
 
-    const fetchOptions = {
-        headers: {
-            Authorization: authorizationHeader
-        }
-    }
+    const fetchOptions = authorizationHeader ? { headers: { Authorization: authorizationHeader }} : undefined
 
     const retryOptions = {
         retries: 5,
@@ -30,7 +26,7 @@ function retrieveResource( url, domElement, authorizationHeader ) {
 
         .then( data => {
             console.log( ">>> " + domElement + ":", JSON.stringify( data ));
-            document.getElementById( domElement ).textContent = data.content
+            document.getElementById( domElement ).textContent = data[dataField]
             })
 
         .catch( error => {
