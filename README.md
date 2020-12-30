@@ -5,11 +5,11 @@ demonstrating the integration of OAuth clients and
 resource servers with an Identity Provider, in this case
 [Keycloak](https://www.keycloak.org/) as installed on https://www.eso.org/dev-keycloak, realm _ALMA_
 
-* _demo-js-frontend_: see [the README file](demo-js-frontend/README.md)
+* _demo-js-frontend_: a pure JavaScript client, see [the README file](demo-js-frontend/README.md)
   
 * _demo-cas-client_: obsolete, please ignore
 
-* _demo-oidc-client_:
+* _demo-oidc-client_: A Java MVC client, see  [the README file](demo-oidc-client/README.md)
   
 * _oidc-resource-server_	
 * _oidc-resource-server-2_

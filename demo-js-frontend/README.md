@@ -21,3 +21,5 @@ Upon first use you will be redirected to the Keycloak login page, where you can 
 The top section of the page will be showing that user's profile. 
 
 The _Load resources_ button will try to load a number of resources, which may or may not be available depending on the user's roles.
+
+The _Logoout_ button will log out the user and redirect to a dead-end page.
