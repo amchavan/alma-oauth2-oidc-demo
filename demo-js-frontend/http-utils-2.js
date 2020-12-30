@@ -98,8 +98,31 @@ function fetchWithRetry( url, fetchOptions, retryOptions ) {
         .catch( reason  => fetchWithRetryInternal( url, fetchOptions, reason,   finalRetryOptions ))
 }
 
+/**
+ * GET a resource with the given headers -- a trimmed down version of fetchWithRetry()
+ */
 function getWithRetry( url, headers, retryOptions ) {
     const fetchOptions = headers ? { headers: headers } : undefined
+    return fetchWithRetry( url, fetchOptions, retryOptions )
+}
+
+/**
+ * POST a resource with the given headers and form data -- a trimmed down version of fetchWithRetry()
+ */
+function postWithRetry( url, headers, data, retryOptions ) {
+    const fetchOptions = {
+        method: 'POST'
+    };
+    fetchOptions.headers = headers ? headers : {}
+
+    if( data ) {
+        const formBody = Object.keys( data )
+                            .map( key => encodeURIComponent( key ) + '=' + encodeURIComponent( data[key] ))
+                            .join( '&' );
+        fetchOptions.body = JSON.stringify( formBody )
+        fetchOptions.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    }
+
     return fetchWithRetry( url, fetchOptions, retryOptions )
 }
 

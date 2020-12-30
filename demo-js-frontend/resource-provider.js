@@ -11,7 +11,8 @@
  */
 function retrieveResource( url, dataField, domElement, authorizationHeader ) {
 
-    const fetchOptions = authorizationHeader ? { headers: { Authorization: authorizationHeader }} : undefined
+    const element = document.getElementById( domElement );
+    element.textContent = ''
 
     const retryOptions = {
         retries: 5,
@@ -20,23 +21,21 @@ function retrieveResource( url, dataField, domElement, authorizationHeader ) {
         // callback: log
     }
 
-    document.getElementById( domElement ).textContent = ''
-
-    fetchWithRetry( url, fetchOptions, retryOptions )
+    getWithRetry( url, { Authorization: authorizationHeader }, retryOptions )
 
         .then( data => {
             console.log( ">>> " + domElement + ":", JSON.stringify( data ));
-            document.getElementById( domElement ).textContent = data[dataField]
+            element.textContent = data[dataField]
             })
 
         .catch( error => {
                 console.error("While fetching", url, ":", JSON.stringify(error))
                 if (error.status === 401 || error.status === 403) {
-                    document.getElementById( domElement ).textContent = '(Unauthorized)'
+                    element.textContent = '(Unauthorized)'
                 }
                 else {
                     let errorMessage = 'Error ' + error.status + ': ' + error.message;
-                    document.getElementById( domElement )
+                    element
                             .insertAdjacentHTML( 'afterbegin', '<strong>' + errorMessage + '</strong>' );
                 }
             })
