@@ -11,6 +11,7 @@ const arcaResourceUrl = 'http://localhost:9002/oidc-resource-server/protected/ar
 const authResourceUrl = 'http://localhost:9002/oidc-resource-server/protected/authenticated'
 const arpResourceUrl = 'http://localhost:9003/oidc-resource-server/service/api/secret'
 const clientId = 'oidc'
+const oidcUrl = 'auth/realms/ALMA/protocol/openid-connect'
 
 function start( accessToken ) {
 

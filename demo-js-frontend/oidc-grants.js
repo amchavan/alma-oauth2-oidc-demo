@@ -3,8 +3,6 @@
  * amchavan, 06-Dec-2018
  */
 
-const oidcUrl = 'auth/realms/ALMA/protocol/openid-connect'
-
 /**
  * @return Our base URL (no request parameters), to be used for redirection
  */
