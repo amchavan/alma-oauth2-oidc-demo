@@ -18,15 +18,15 @@ function start( accessToken ) {
     const authorizationHeader = 'Bearer ' + accessToken;
 
     // Username and full name we get from the access token
-    $( '#userID' ).text( userProfile['preferred_username'] );
-    $( '#userFullName' ).text( userProfile['given_name'] + ' ' + userProfile['family_name'] );
-    $( '#userRoles' ).text( userProfile['roles'] )
+    document.getElementById( 'userID' ).textContent = userProfile['preferred_username']
+    document.getElementById( 'userFullName' ).textContent = userProfile['given_name'] + ' ' + userProfile['family_name']
+    document.getElementById( 'userRoles' ).textContent = userProfile['roles']
 
     // Retrieve and display a public and a protected resource
     // The protected resource will be returned only if we have the OBOPS/ARP role
-    $('#get-resources').click(getResources(authorizationHeader))
+    document.getElementById( 'get-resources' ).onclick = getResources(authorizationHeader)
     // The logout button will, ha!, log us out
-    $('#logout').click( logout( authServerUrl ));
+    document.getElementById( 'logout' ).onclick = logout( authServerUrl )
 }
 
 // Return function to be invoked when clicking on the #get-resources button,

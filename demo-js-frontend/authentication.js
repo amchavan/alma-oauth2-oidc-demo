@@ -42,8 +42,8 @@ function obtainAccessToken( authServerUrl, clientId ) {
 
     const accessToken = sessionStorage.getItem( accessTokenKey )
     if( accessToken && isTokenValid( accessToken ) && (! isTokenExpired( accessToken ))) {
-        console.log( ">>> access token (stored):", accessToken )
-        return new Promise( function(resolve, reject) { 
+        console.log( '>>> access token (stored):', accessToken )
+        return new Promise( function( resolve, ignored ) {
             // reject callback is unused here
             resolve( { access_token: accessToken } )
         })

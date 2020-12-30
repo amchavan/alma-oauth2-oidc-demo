@@ -24,12 +24,12 @@ function retrieveResource( url, dataField, domElement, authorizationHeader ) {
     getWithRetry( url, { Authorization: authorizationHeader }, retryOptions )
 
         .then( data => {
-            console.log( ">>> " + domElement + ":", JSON.stringify( data ));
+            console.log( '>>> ' + domElement + ':', JSON.stringify( data ));
             element.textContent = data[dataField]
             })
 
         .catch( error => {
-                console.error("While fetching", url, ":", JSON.stringify(error))
+                console.error( 'While fetching', url, ':', JSON.stringify( error ))
                 if (error.status === 401 || error.status === 403) {
                     element.textContent = '(Unauthorized)'
                 }

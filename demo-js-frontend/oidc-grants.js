@@ -51,8 +51,7 @@ function authCodeGrantStep2( authServerURL, clientId, authCodeParams ) {
     };
 
     const tokenUrl = authServerURL + oidcUrl + '/token'
-    return httpService.post( tokenUrl, null, formData )
-    // return postWithRetry( tokenUrl, undefined, formData )
+    return postWithRetry( tokenUrl, undefined, formData )
 }
 
 /**
