@@ -2,6 +2,7 @@ package alma.obops.test.oidcresourceserver;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,12 +16,13 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/protected")
+@CrossOrigin
 public class OAuth2ResourceServerController {
 
 	static int nextID = 0;
 
 	@GetMapping( "/arca-only" )
-	public Object arcaOnly( @AuthenticationPrincipal Jwt jwt ) {
+	public Object arcaOnly() {
 		Map<String,Object> model = new HashMap<>();
 		model.put( "id", nextID++ );
 		model.put( "content", UUID.randomUUID() );

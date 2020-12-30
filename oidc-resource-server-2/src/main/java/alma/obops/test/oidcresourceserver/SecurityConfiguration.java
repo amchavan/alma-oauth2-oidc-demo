@@ -18,16 +18,20 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests(authorize -> authorize
-                        .antMatchers( "/**/arca-only" ).hasAuthority( "OBOPS/ARCA" )
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer( oauth2 ->
-                        oauth2.jwt( jwt ->
-                                jwt.jwtAuthenticationConverter( jwtAuthenticationConverter() )
-                        )
-                );
+
+        // Define common behavior
+        http.csrf().disable()
+            .cors()
+            .and()
+            .authorizeRequests(authorize -> authorize
+                    .antMatchers( "/**/arca-only" ).hasAuthority( "OBOPS/ARCA" )
+                    .anyRequest().authenticated()
+            )
+            .oauth2ResourceServer( oauth2 ->
+                    oauth2.jwt( jwt ->
+                            jwt.jwtAuthenticationConverter( jwtAuthenticationConverter() )
+                    )
+            );
     }
 
     Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
