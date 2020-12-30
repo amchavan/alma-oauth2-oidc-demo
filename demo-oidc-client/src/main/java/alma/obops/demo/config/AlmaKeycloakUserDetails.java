@@ -11,6 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author amchavan, 17-Dec-2020
+ */
 class AlmaKeycloakUserDetails implements UserDetails {
 
     private static final long serialVersionUID = 1L;

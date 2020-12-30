@@ -61,7 +61,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http
-                .authorizeRequests().regexMatchers("/secured.*", "/login").hasAuthority( "OBOPS/ARP" )
+                .authorizeRequests().regexMatchers("/secured.*").hasAuthority( "OBOPS/ARP" )
                 .and()
                 .authorizeRequests().regexMatchers("/").permitAll()
                 .anyRequest().permitAll();
