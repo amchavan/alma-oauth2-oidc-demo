@@ -1,8 +1,15 @@
 <#include "*/common/header.ftl">
-<p>
-    This is a public page
-<div>
-    <a class="ui button" href="/secured">Secured page</a>
-    <a class="ui button" href="/logout">Logout</a>
+
+<div class="container-fluid">
+    <div>
+        This is a public page
+    </div>
+    <div>&nbsp;</div>
+    <div>
+        <a class="btn btn-primary" href="/secured">Secured page</a>
+        <p></p>
+        <a class="btn btn-primary" href="/logout">Logout</a>
+    </div>
 </div>
+
 <#include "*/common/footer.ftl">

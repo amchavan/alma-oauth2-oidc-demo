@@ -1,8 +1,14 @@
 <#include "*/common/header.ftl">
-<p>
-    This is a secured page, welcome <span style="color:cadetblue;">${username!""}</span>
-<div>
-    <a class="ui button" href="/logout">Logout</a>
+
+<div class="container-fluid">
+    <div>
+        This is a secured page, welcome <span style="color:cadetblue;">${username!""}</span>
+    </div>
+    <div>&nbsp;</div>
+    <div>
+        <a class="btn btn-primary" href="/logout">Logout</a>
+    </div>
 </div>
+
 <#include "*/common/footer.ftl">
 

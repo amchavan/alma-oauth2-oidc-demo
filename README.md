@@ -48,7 +48,8 @@ Assuming the Keycloak Identity Provider is up and running:
 * Serve the JavaScript client:
   ```
   cd demo-js-frontend
-  python -m http.server 8000
+  python -m http.server 8000 &
+  cd ..
   ```
   It will be available at http://localhost:8000/demo-spa.html
 
