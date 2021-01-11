@@ -21,7 +21,7 @@
     </div>
 
     <div>&nbsp</div>
-    
+
     <div>
         <a class="btn btn-primary" href="/">Home</a>
     </div>

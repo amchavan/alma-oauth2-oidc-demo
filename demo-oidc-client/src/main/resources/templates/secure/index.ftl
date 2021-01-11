@@ -6,6 +6,8 @@
     </div>
     <div>&nbsp;</div>
     <div>
+        <a class="btn btn-primary" href="/">Home</a>
+        <p></p>
         <a class="btn btn-primary" href="/logout">Logout</a>
     </div>
 </div>
