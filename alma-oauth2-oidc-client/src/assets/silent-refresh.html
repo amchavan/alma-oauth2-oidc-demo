@@ -1,0 +1,12 @@
+<!doctype html>
+<!--
+  See https://manfredsteyer.github.io/angular-oauth2-oidc/docs/additional-documentation/silent-refresh.html
+-->
+<html>
+<body>
+Silent refresh window – should be displayed in an iframe.
+<script>
+    (window.opener || window.parent).postMessage(location.hash || ('#' + location.search), location.origin);
+</script>
+</body>
+</html>

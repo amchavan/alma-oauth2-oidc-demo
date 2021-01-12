@@ -1,0 +1,8 @@
+svg {
+    border-radius: 50%;
+    transform: rotate(-90deg);
+}
+
+circle {
+    stroke-width: 32;
+}

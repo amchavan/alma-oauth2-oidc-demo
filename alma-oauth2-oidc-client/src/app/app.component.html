@@ -1,0 +1,97 @@
+<h1>
+    {{ title }}
+</h1>
+<div>
+    <div>
+        You are
+        <span *ngIf="! authenticated">not yet</span>
+        logged in
+        <span *ngIf="authenticated">as <em>{{ username }}</em> ({{ fullname }})</span>
+        <p></p>
+    </div>
+    <div *ngIf="authenticated">
+        <table>
+            <tr>
+                <td class="data-label">Refresh token</td> <td>{{ refreshToken.substr(0, 20) + " ... " + refreshToken.substr( -20 ) }}</td>
+            </tr>
+            <tr>
+                <td class="data-label">Issued at</td> <td>{{ refreshTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+            </tr>
+            <tr>
+                <td class="data-label">Expires at</td>
+                <td>
+                    {{ refreshTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}
+                    ({{ remainingRefreshTokenValidityPercent }}%)
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td class="data-label">Access token</td> <td>{{ accessToken.substr(0, 20) + " ... " + accessToken.substr( -20 ) }}</td>
+            </tr>
+            <tr>
+                <td class="data-label">Issued at</td> <td *ngIf="accessTokenObtainedAt !== null">{{ accessTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+            </tr>
+            <tr>
+                <td class="data-label">Expires at</td>
+                <td>
+                    <span *ngIf="remainingAccessTokenValidityPercent > 0">
+                    {{ accessTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}
+                    ({{ remainingAccessTokenValidityPercent }}%)
+                    </span>
+
+                    <span *ngIf="remainingAccessTokenValidityPercent == 0">
+                        Expired
+                    </span>
+                </td>
+                <td>
+                    <dynamic-two-color-pie-chart
+                            size="100"
+                            progress="{{ 100 - remainingAccessTokenValidityPercent }}"
+                            title="{{convertMsecToHHMMSS( remainingAccessTokenValidity) }}, {{ remainingAccessTokenValidityPercent }}%">
+                    </dynamic-two-color-pie-chart>
+                </td>
+            </tr>
+        </table>
+        <p></p>
+    </div>
+    <div>
+        <button (click)="loadUserInfoFromResourceServer()"
+                class="text"
+                [disabled]="!authenticated">
+            Load user info
+        </button>
+
+        <button (click)="loadSecretFromResourceServer()"
+                class="text"
+                [disabled]="!authenticated">
+            Load secret
+        </button>
+
+        <button (click)="logout()"
+                class="text"
+                [disabled]="!authenticated">
+            Logout
+        </button>
+
+        <button (click)="refresh()"
+                class="text"
+                [disabled]="!authenticated">
+            Refresh
+        </button>
+
+        <!-- KEEP JUST IN CASE
+        <button (click)="openReloadModal()"
+                class="text"
+                [disabled]="!authenticated">
+            Open Modal 1
+        </button>
+        -->
+    </div>
+</div>
+
+<modal-dialog-box id="reload-modal">
+    <h3>Your Single Sign-On session has expired</h3>
+    <p>Please reload the application and authenticate again</p>
+    <button (click)="reload()">Reload</button>
+</modal-dialog-box>
+
