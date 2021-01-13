@@ -74,17 +74,17 @@ export class OidcAuthService {
         this.backgroundLoopID = this.computeTokenValidityOnInterval( 2500 );
 
         // Refresh the access token when it expires
-        addEventListener( OidcOauthConstants.ACCESS_TOKEN_TIMEOUT_EVENT, (e: CustomEvent) => {
+        addEventListener( OidcOauthConstants.ACCESS_TOKEN_TIMEOUT_EVENT, () => {
             this.refresh();
         });
 
         // Stop the background refresh loop when the SSO session has expired
-        addEventListener( OidcOauthConstants.SSO_SESSION_EXPIRED_EVENT, (e: CustomEvent) => {
+        addEventListener( OidcOauthConstants.SSO_SESSION_EXPIRED_EVENT, () => {
             clearInterval( this.backgroundLoopID );
         });
 
         // Stop the background refresh loop if something bad happened
-        addEventListener( OidcOauthConstants.TOKEN_REFRESH_ERROR_EVENT, (e: CustomEvent) => {
+        addEventListener( OidcOauthConstants.TOKEN_REFRESH_ERROR_EVENT, () => {
             clearInterval( this.backgroundLoopID );
         });
     }
@@ -102,21 +102,23 @@ export class OidcAuthService {
         return this.identityClaims;
     }
 
-    /** Returns the current identity token, if any */
-    get idToken(): string {
-        return this.oauthService.getIdToken();
-    }
+    // Keycloak returns no ID token
+    // /** Returns the current identity token, if any */
+    // get idToken(): string {
+    //     return this.oauthService.getIdToken();
+    // }
 
     /** Returns the current refresh token, if any */
     get refreshToken(): string {
         return this.oauthService.getRefreshToken();
     }
 
-    /** Returns the datetime the current access token was obtained */
-    get idTokenObtainedAt(): Date {
-        const idTokenClaims = JSON.parse( sessionStorage.getItem( 'id_token_claims_obj' ));
-        return new Date(idTokenClaims.iat * 1000);
-    }
+    // Keycloak returns no ID token
+    // /** Returns the datetime the current access token was obtained */
+    // get idTokenObtainedAt(): Date {
+    //     const idTokenClaims = JSON.parse( sessionStorage.getItem( 'id_token_claims_obj' ));
+    //     return new Date(idTokenClaims.iat * 1000);
+    // }
 
     /** Returns the datetime the current refresh token was obtained */
     get refreshTokenObtainedAt(): Date {
@@ -133,11 +135,13 @@ export class OidcAuthService {
         return null;
     }
 
-    /** Returns the datetime the current identity token will expire */
-    get idTokenExpiresAt(): Date {
-        const n = this.oauthService.getIdTokenExpiration();
-        return new Date( n );
-    }
+
+    // Keycloak returns no ID token
+    // /** Returns the datetime the current identity token will expire */
+    // get idTokenExpiresAt(): Date {
+    //     const n = this.oauthService.getIdTokenExpiration();
+    //     return new Date( n );
+    // }
 
     /** Returns the datetime the current refresh token will expire */
     get refreshTokenExpiresAt(): Date {
@@ -199,7 +203,7 @@ export class OidcAuthService {
     public refresh(): void {
         this.oauthService
           .refreshToken()
-          .then( response => {
+          .then( () => {
             // console.log( 'Refreshed access token' );
             // console.log('Refreshed access token', response);
           })

@@ -11,17 +11,6 @@
     </div>
     <div *ngIf="authenticated">
         <table>
-            <tr>
-                <td class="data-label">ID token</td> <td>{{ idToken.substr(0, 20) + " ... " + idToken.substr( -20 ) }}</td>
-            </tr>
-            <tr>
-                <td class="data-label">Issued at</td> <td>{{ idTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
-            </tr>
-            <tr>
-                <td class="data-label">Expires at</td> <td>{{ idTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}</td>
-            </tr>
-
-            <tr><td>&nbsp;</td></tr>
 
             <tr>
                 <td class="data-label">Refresh token</td> <td>{{ refreshToken.substr(0, 20) + " ... " + refreshToken.substr( -20 ) }}</td>
@@ -57,6 +46,9 @@
                         Expired
                     </span>
                 </td>
+            </tr>
+            <tr *ngIf="remainingAccessTokenValidityPercent > 0">
+                <td></td>
                 <td>
                     <dynamic-two-color-pie-chart
                             size="100"
