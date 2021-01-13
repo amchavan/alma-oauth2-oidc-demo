@@ -87,6 +87,19 @@ export class AppComponent implements OnInit {
         return this.oidcAuthService.accessTokenExpiresAt;
     }
 
+    public get idToken() {
+        return this.oidcAuthService.idToken;
+    }
+
+    public get idTokenObtainedAt() {
+        return this.oidcAuthService.idTokenObtainedAt;
+    }
+
+    public get idTokenExpiresAt() {
+        return this.oidcAuthService.idTokenExpiresAt;
+    }
+
+
     // Invoked when clicking on the UI button
     loadUserInfoFromResourceServer(): void {
         this.httpClient
