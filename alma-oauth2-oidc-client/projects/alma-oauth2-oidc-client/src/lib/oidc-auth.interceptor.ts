@@ -7,9 +7,10 @@ import { catchError } from 'rxjs/operators';
 
 /**
  * HttpInterceptor adding a 'Bearer' Authorization header to the request with
- * our identity token as value.
+ * our access token as value. The header is only added if the request URL
+ * includes one of the URL fragments in the OidcAuthInterceptorConfig
  *
- * amchavan, 13-Mar-2020
+ * amchavan, 13-Mar-2020, 13-Jan-2021
  */
 @Injectable({
     providedIn: 'root',
@@ -22,14 +23,15 @@ export class OidcOAuthInterceptor implements HttpInterceptor {
 
     /**
      * Returns true if the given URL needs Bearer authentication header,
-     * false otherwise
+     * false otherwise. Header is needed if the request URL
+     * includes one of the URL fragments in the OidcAuthInterceptorConfig
      */
     private needsIdToken(url: string): boolean {
         const securedURLs = this.oidcAuthInterceptorConfig.securedURLs;
         if ( securedURLs.length === 0 ) {
             return false;
         }
-        const found = securedURLs.find(u => url.startsWith(u.toLowerCase()));
+        const found = securedURLs.find(u => url.toLowerCase().includes(u.toLowerCase()));
         return !!found;
     }
 

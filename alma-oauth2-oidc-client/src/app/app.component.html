@@ -2,6 +2,7 @@
     {{ title }}
 </h1>
 <div>
+    <h2>OIDC-provided information</h2>
     <div>
         You are
         <span *ngIf="! authenticated">not yet</span>
@@ -11,12 +12,14 @@
     </div>
     <div *ngIf="authenticated">
         <table>
-
+            <tbody>
             <tr>
-                <td class="data-label">Refresh token</td> <td>{{ refreshToken.substr(0, 20) + " ... " + refreshToken.substr( -20 ) }}</td>
+                <td class="data-label">Refresh token</td>
+                <td>{{ refreshToken.substr( 0, 20 ) + " ... " + refreshToken.substr( -20 ) }}</td>
             </tr>
             <tr>
-                <td class="data-label">Issued at</td> <td>{{ refreshTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+                <td class="data-label">Issued at</td>
+                <td>{{ refreshTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
             </tr>
             <tr>
                 <td class="data-label">Expires at</td>
@@ -26,20 +29,24 @@
                 </td>
             </tr>
 
-            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td>&nbsp;</td>
+            </tr>
 
             <tr>
-                <td class="data-label">Access token</td> <td>{{ accessToken.substr(0, 20) + " ... " + accessToken.substr( -20 ) }}</td>
+                <td class="data-label">Access token</td>
+                <td>{{ accessToken.substr( 0, 20 ) + " ... " + accessToken.substr( -20 ) }}</td>
             </tr>
             <tr>
-                <td class="data-label">Issued at</td> <td *ngIf="accessTokenObtainedAt !== null">{{ accessTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+                <td class="data-label">Issued at</td>
+                <td *ngIf="accessTokenObtainedAt !== null">{{ accessTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
             </tr>
             <tr>
                 <td class="data-label">Expires at</td>
                 <td>
                     <span *ngIf="remainingAccessTokenValidityPercent > 0">
                     {{ accessTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}
-                    ({{ remainingAccessTokenValidityPercent }}%)
+                        ({{ remainingAccessTokenValidityPercent }}%)
                     </span>
 
                     <span *ngIf="remainingAccessTokenValidityPercent == 0">
@@ -51,16 +58,33 @@
                 <td></td>
                 <td>
                     <dynamic-two-color-pie-chart
-                            size="100"
-                            progress="{{ 100 - remainingAccessTokenValidityPercent }}"
-                            title="{{convertMsecToHHMMSS( remainingAccessTokenValidity) }}, {{ remainingAccessTokenValidityPercent }}%">
+                        size="100"
+                        progress="{{ 100 - remainingAccessTokenValidityPercent }}"
+                        title="{{convertMsecToHHMMSS( remainingAccessTokenValidity) }}, {{ remainingAccessTokenValidityPercent }}%">
                     </dynamic-two-color-pie-chart>
                 </td>
             </tr>
+            </tbody>
         </table>
-        <p></p>
+
+        <h2>Server-provided information</h2>
+        <table>
+            <tbody>
+            <tr>
+                <td class="data-label">User info</td>
+                <td><code>{{ userInfo }}</code></td>
+            </tr>
+            <tr>
+                <td class="data-label">User secret</td>
+                <td><code>{{ userSecret }}</code></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div>
+        <p></p>
+        <!-- KEEP JUST IN CASE
+
         <button (click)="loadUserInfoFromResourceServer()"
                 class="text"
                 [disabled]="!authenticated">
@@ -72,7 +96,7 @@
                 [disabled]="!authenticated">
             Load secret
         </button>
-
+        -->
         <button (click)="logout()"
                 class="text"
                 [disabled]="!authenticated">
@@ -82,7 +106,7 @@
         <button (click)="refresh()"
                 class="text"
                 [disabled]="!authenticated">
-            Refresh
+            Token refresh
         </button>
 
         <!-- KEEP JUST IN CASE

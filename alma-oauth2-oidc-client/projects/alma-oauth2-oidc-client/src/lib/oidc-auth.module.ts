@@ -1,5 +1,6 @@
 import { OidcOAuthInterceptor } from './oidc-auth.interceptor';
 import { ModuleWithProviders, NgModule } from '@angular/core';
+// @ts-ignore
 import { OAuthModule } from 'angular-oauth2-oidc';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { OidcAuthInterceptorConfig } from './oicd-auth.interceptor.config';

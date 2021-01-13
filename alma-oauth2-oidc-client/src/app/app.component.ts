@@ -21,6 +21,8 @@ export class AppComponent implements OnInit {
     remainingAccessTokenValidityPercent: number;
     remainingRefreshTokenValidityPercent: number;
     remainingRefreshTokenValidity: number;
+    userInfo = 'N/A';
+    userSecret = 'N/A';
 
     constructor( private httpClient: HttpClient, private oidcAuthService: OidcAuthService, private modalService: ModalService ) {
     }
@@ -44,7 +46,11 @@ export class AppComponent implements OnInit {
         this.oidcAuthService.authenticationComplete.subscribe( () => {
             console.log( '>>> Authentication complete' );
             this.authenticated = true;
+            this.loadUserInfoFromResourceServer();
+            this.loadSecretFromResourceServer();
         });
+
+        this.oidcAuthService.authenticate( environment.oauthOidcServerURL, environment.oauthOidcClientID );
     }
 
     /**
@@ -96,7 +102,7 @@ export class AppComponent implements OnInit {
             .subscribe(
                 (response) => {
                     // @ts-ignore
-                    alert( 'User info successfully loaded from resource server: ' + JSON.stringify( response.body.content ));
+                    this.userInfo = response.body.content;
                 },
 
                 (error: HttpErrorResponse) => {
@@ -125,11 +131,14 @@ export class AppComponent implements OnInit {
             .subscribe(
                 (response) => {
                     // @ts-ignore
-                    alert( 'Secret info successfully loaded from resource server: ' + JSON.stringify( response.body.content ));
+                    this.userSecret = response.body.content;
                 },
 
                 (error: HttpErrorResponse) => {
-                    if (error.status === 401 &&
+                    if (error.status === 403 ) {
+                        this.userSecret = '(not authorized)';
+
+                    } else if (error.status === 401 &&
                         error.statusText.toLowerCase().includes( OidcOauthConstants.JWT_EXPIRED_STATUS_TEXT )) {
 
                         // If our JWT has expired we can't really do anything here, but
@@ -137,6 +146,7 @@ export class AppComponent implements OnInit {
                         // the application -- rudimentary error handling!
                         alert( 'Your session has expired, application will restart' );
                         location.reload ();
+
                     } else {
                         // Nope, our JWT has not expired, do with what we have
                         alert( error.message );
