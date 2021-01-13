@@ -7,7 +7,7 @@ and the
 of an OIDC Identity Provider.
 
 The main project is an example Angular application demonstrating how to use the
-library. 
+library, it requires a resource server ... **TODO**
 
 The library's code is in the _projects/alma-oauth2-oidc-client_ directory, see the 
 [README file](projects/alma-oauth2-oidc-client/README.md) there.
