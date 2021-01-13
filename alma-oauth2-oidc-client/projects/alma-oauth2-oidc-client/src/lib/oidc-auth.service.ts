@@ -190,11 +190,6 @@ export class OidcAuthService {
      * there
      */
     public logout(): void {
-        // TODO -- Look into this with v 10 of the library.
-        //         The revokeTokenAndLogout() method is not in V9.1 but it is on master.
-        //         amchavan, 16-Apr-2020
-        //
-        // this.oauthService.revokeTokenAndLogout();
         this.oauthService.logOut();
     }
 
