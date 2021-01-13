@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
                         location.reload ();
                     } else {
                         // Nope, our JWT has not expired, do with what we have
-                        alert( error.message );
+                        this.userInfo = error.message;
                         console.error( '>>> error:', JSON.stringify( error ));
                     }
                 });
@@ -149,7 +149,7 @@ export class AppComponent implements OnInit {
 
                     } else {
                         // Nope, our JWT has not expired, do with what we have
-                        alert( error.message );
+                        this.userSecret = error.message;
                         console.error( '>>> error:', JSON.stringify( error ));
                     }
                 });
@@ -178,5 +178,9 @@ export class AppComponent implements OnInit {
 
     reload() {
         location.reload();
+    }
+
+    toSimpleISOString( datetime ) {
+        return datetime.toISOString().split( '.' )[0].replace( 'T', ' ' );
     }
 }

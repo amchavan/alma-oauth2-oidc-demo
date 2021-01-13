@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { forkJoin, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { AuthConfig, NullValidationHandler, OAuthService } from 'angular-oauth2-oidc';
 import { OidcOauthConstants } from './oidc-oauth.constants';
 
@@ -185,7 +185,22 @@ export class OidcAuthService {
      * Applications call this method to launch the authentication process
      */
     public authenticate(oauthOidcServerURL: string, oauthOidcClientID: string) {
-        return forkJoin([ this.authenticateInternal(oauthOidcServerURL, oauthOidcClientID) ]);
+
+        angularOauth2OidcBasicConfig.issuer = oauthOidcServerURL;
+        angularOauth2OidcBasicConfig.clientId = oauthOidcClientID;
+        this.oauthService.configure( angularOauth2OidcBasicConfig );
+        this.oauthService.tokenValidationHandler = new NullValidationHandler();
+
+        return this.oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
+            if (!loggedIn) {
+                console.log('ERROR: login failed');   // anything else we can do here?
+                return;
+            }
+
+            this.identityClaims = this.oauthService.getIdentityClaims();
+            console.log('>>> identityClaims:', this.identityClaims);
+            this.authenticationComplete.next( this.identityClaims );    // notify we're done with authentication
+        });
     }
 
     /**
@@ -222,32 +237,6 @@ export class OidcAuthService {
                   dispatchEvent(new CustomEvent( OidcOauthConstants.TOKEN_REFRESH_ERROR_EVENT ));
               }
           });
-    }
-
-    /**
-     * Complete the OAuthService configuration and launch the authentication process
-     */
-    private authenticateInternal(oauthOidcServerURL: string, oauthOidcClientID: string) {
-
-        angularOauth2OidcBasicConfig.issuer = oauthOidcServerURL;
-        angularOauth2OidcBasicConfig.clientId = oauthOidcClientID;
-        this.oauthService.configure( angularOauth2OidcBasicConfig );
-        this.oauthService.tokenValidationHandler = new NullValidationHandler();
-
-        // Could not make setupAutomaticSilentRefresh() to work, so I'm commenting it out
-        // Its function is taken up by computeTokenValidityOnInterval()
-        // ---- this.oauthService.setupAutomaticSilentRefresh( {}, 'access_token', false );
-
-        return this.oauthService.loadDiscoveryDocumentAndLogin().then(loggedIn => {
-            if (!loggedIn) {
-                console.log('ERROR: login failed');   // anything else we can do here?
-                return;
-            }
-
-            this.identityClaims = this.oauthService.getIdentityClaims();
-            console.log('>>> identityClaims:', this.identityClaims);
-            this.authenticationComplete.next( this.identityClaims );
-        });
     }
 
     /**

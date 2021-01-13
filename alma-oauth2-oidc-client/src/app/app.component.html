@@ -19,12 +19,12 @@
             </tr>
             <tr>
                 <td class="data-label">Issued at</td>
-                <td>{{ refreshTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+                <td>{{ toSimpleISOString( refreshTokenObtainedAt ) }}</td>
             </tr>
             <tr>
                 <td class="data-label">Expires at</td>
                 <td>
-                    {{ refreshTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}
+                    {{ toSimpleISOString( refreshTokenExpiresAt ) }}
                     ({{ remainingRefreshTokenValidityPercent }}%)
                 </td>
             </tr>
@@ -39,29 +39,25 @@
             </tr>
             <tr>
                 <td class="data-label">Issued at</td>
-                <td *ngIf="accessTokenObtainedAt !== null">{{ accessTokenObtainedAt.toISOString().replace( 'T', ' ' ) }}</td>
+                <td *ngIf="accessTokenObtainedAt !== null">{{ toSimpleISOString( accessTokenObtainedAt ) }}</td>
             </tr>
             <tr>
                 <td class="data-label">Expires at</td>
                 <td>
-                    <span *ngIf="remainingAccessTokenValidityPercent > 0">
-                    {{ accessTokenExpiresAt.toISOString().replace( 'T', ' ' ) }}
+                    <span style="vertical-align: middle" *ngIf="remainingAccessTokenValidityPercent > 0">
+                    {{ toSimpleISOString( accessTokenExpiresAt ) }}
                         ({{ remainingAccessTokenValidityPercent }}%)
+                        &nbsp;
+                        <dynamic-two-color-pie-chart
+                            size="20"
+                            progress="{{ 100 - remainingAccessTokenValidityPercent }}"
+                            title="{{convertMsecToHHMMSS( remainingAccessTokenValidity) }}, {{ remainingAccessTokenValidityPercent }}%">
+                        </dynamic-two-color-pie-chart>
                     </span>
 
                     <span *ngIf="remainingAccessTokenValidityPercent == 0">
                         Expired
                     </span>
-                </td>
-            </tr>
-            <tr *ngIf="remainingAccessTokenValidityPercent > 0">
-                <td></td>
-                <td>
-                    <dynamic-two-color-pie-chart
-                        size="100"
-                        progress="{{ 100 - remainingAccessTokenValidityPercent }}"
-                        title="{{convertMsecToHHMMSS( remainingAccessTokenValidity) }}, {{ remainingAccessTokenValidityPercent }}%">
-                    </dynamic-two-color-pie-chart>
                 </td>
             </tr>
             </tbody>
