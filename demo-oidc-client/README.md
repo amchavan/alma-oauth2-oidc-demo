@@ -16,8 +16,6 @@ The application will be available at http://localhost:9004.
 
 ## Using the application
 
-"OBOPS/ARP"
-
 Upon first use you will be taken to a public page. 
 If the user has the _OBOPS/ARP_ role the _Secured page_ 
 button will take you to a simple page displaying that user's 

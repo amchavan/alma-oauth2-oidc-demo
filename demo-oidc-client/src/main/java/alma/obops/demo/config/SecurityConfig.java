@@ -64,6 +64,12 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .authorizeRequests().regexMatchers("/secured.*").hasAuthority( "OBOPS/ARP" )
                 .and()
                 .authorizeRequests().regexMatchers("/").permitAll()
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
+                .and()
+                .logout().invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessUrl("/auth/logout")
+                        .deleteCookies("JSESSIONID")
+                        .permitAll();
     }
 }

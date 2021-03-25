@@ -6,7 +6,7 @@
     </div>
     <div>&nbsp;</div>
     <div>
-        <a class="btn btn-primary" href="/secured">Secured page</a>
+        <a class="btn btn-primary" href="/secured">Secured page</a> Needs "OBOPS/ARP" role.
         <p></p>
         <a class="btn btn-primary" href="/logout">Logout</a>
     </div>
