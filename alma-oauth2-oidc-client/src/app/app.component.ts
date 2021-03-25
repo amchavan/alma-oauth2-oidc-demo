@@ -180,7 +180,7 @@ export class AppComponent implements OnInit {
         location.reload();
     }
 
-    toSimpleISOString( datetime ) {
+    toSimpleISOString( datetime: Date ) {
         return datetime.toISOString().split( '.' )[0].replace( 'T', ' ' );
     }
 }
